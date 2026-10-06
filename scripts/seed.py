@@ -10,7 +10,7 @@ def seed():
     try:
         # Проверяем, не заполнена ли БД
         if crud.get_role_by_name(session, "trader"):
-            print("ℹ️  БД уже заполнена. Пропускаем seed.")
+            print("БД уже заполнена. Пропускаем seed.")
             return
 
         # 1. Роли
@@ -48,7 +48,7 @@ def seed():
 
         crud.close_position(session, p1.id, exit_price=62000, exit_type="TARGET")
 
-        print("✅ Тестовые данные успешно добавлены")
+        print("Тестовые данные успешно добавлены")
     finally:
         session.close()
 
