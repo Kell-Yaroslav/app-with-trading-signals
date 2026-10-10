@@ -1,4 +1,4 @@
-from app.database import engine, SessionLocal
+from app.database import engine
 from sqlalchemy import text, inspect
 from app.models import Base
 
