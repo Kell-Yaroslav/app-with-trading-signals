@@ -1,7 +1,7 @@
 from app.database import SessionLocal, engine
 from app.models import Base
 from app import crud
-
+from api_service.auth.password import hash_password
 
 def seed():
     Base.metadata.create_all(bind=engine)
@@ -18,10 +18,12 @@ def seed():
         role_admin  = crud.create_role(session, "admin",  "Администратор")
 
         # 2. Пользователи
-        admin = crud.create_user(session, "admin", "admin@mail.ru", "hash_a", role_admin.id)
-        ivan  = crud.create_user(session, "ivan",  "ivan@mail.ru",  "hash_i", role_trader.id)
-        petr  = crud.create_user(session, "petr",  "petr@mail.ru",  "hash_p", role_trader.id)
+        # Единый пароль для всех тестовых пользователей — "1234"
+        default_password = hash_password("1234")
 
+        admin = crud.create_user(session, "admin", "admin@mail.ru", default_password, role_admin.id)
+        ivan = crud.create_user(session, "ivan", "ivan@mail.ru", default_password, role_trader.id)
+        petr = crud.create_user(session, "petr", "petr@mail.ru", default_password, role_trader.id)
         # 3. Настройки
         crud.create_setting(session, admin.id, ema_period=20, target_pct=2.0, stop_pct=1.0)
         crud.create_setting(session, ivan.id,  ema_period=20, target_pct=3.0, stop_pct=1.5)
