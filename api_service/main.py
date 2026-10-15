@@ -5,7 +5,7 @@
 """
 from fastapi import FastAPI
 
-from api_service.api import auth, users, roles
+from api_service.api import auth, users, roles, coins, settings, user_coins, positions
 
 app = FastAPI(
     title="Crypto Monitor API",
@@ -17,6 +17,10 @@ app = FastAPI(
 app.include_router(auth.router)
 app.include_router(users.router)
 app.include_router(roles.router)
+app.include_router(coins.router)
+app.include_router(settings.router)
+app.include_router(user_coins.router)
+app.include_router(positions.router)
 
 @app.get("/")
 def root():
