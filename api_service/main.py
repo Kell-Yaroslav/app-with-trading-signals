@@ -2,6 +2,7 @@
 
 Запуск:
     uvicorn api_service.main:app --reload
+    Start-Process -NoNewWindow .\nginx.exe
 """
 from fastapi import FastAPI
 
