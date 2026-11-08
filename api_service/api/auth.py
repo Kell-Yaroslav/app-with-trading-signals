@@ -12,11 +12,25 @@ from api_service.schemas.user import UserCreate, UserRead
 from api_service.schemas.token import Token
 
 
+
+
+
+from api_service.dependencies import get_session_factory
 router = APIRouter(prefix="/api/auth", tags=["auth"])
+
+session_dependency = get_session_factory("crypto_monitor")
+
+@router.post("/register", response_model=UserRead, status_code=status.HTTP_201_CREATED)
+def register(
+    user_data: UserCreate,
+    session: Session = Depends(session_dependency)
+):
+    ...
 
 
 @router.post("/register", response_model=UserRead, status_code=status.HTTP_201_CREATED)
 def register(
+
     user_data: UserCreate,
     session: Session = Depends(get_session),
 ):

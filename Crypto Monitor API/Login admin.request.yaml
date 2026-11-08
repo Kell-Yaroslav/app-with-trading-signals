@@ -1,0 +1,17 @@
+$kind: http-request
+url: http://localhost:8000/api/auth/login
+method: POST
+body:
+  type: formdata
+  content:
+    - type: text
+      key: username
+      value: admin
+    - type: text
+      key: password
+      value: "1234"
+scripts:
+  - type: afterResponse
+    code: pm.collectionVariables.set("token", pm.response.json().access_token);
+    language: text/javascript
+order: 1000

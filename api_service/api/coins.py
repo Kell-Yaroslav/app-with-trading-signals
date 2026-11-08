@@ -1,6 +1,7 @@
 """Эндпоинты для работы с монетами."""
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
+from app.database import SessionLocal
 
 from app import crud
 from app.models import User, Coin
@@ -24,8 +25,18 @@ def get_coin_by_id(coin_id: int, session: Session = Depends(get_session)):
     if not coin:
         raise HTTPException(status_code=404, detail="Монета не найдена")
     return coin
-
-
+'''
+@router.get("/{coin_id}", response_model=CoinRead)
+def get_coin_by_id(coin_id: int):
+    session=SessionLocal()
+    try:
+        coin = session.get(Coin, coin_id)
+        if not coin:
+            raise HTTPException(status_code=404, detail="Монета не найдена")
+        return coin
+    finally:
+        session.close()
+'''
 @router.post("", response_model=CoinRead, status_code=status.HTTP_201_CREATED)
 def create_coin(
     coin_data: CoinCreate,

@@ -3,10 +3,12 @@
 Запуск:
     uvicorn api_service.main:app --reload
     Start-Process -NoNewWindow .\nginx.exe
+
+    scope, receive, send
 """
 from fastapi import FastAPI
 
-from api_service.api import auth, users, roles, coins, settings, user_coins, positions
+from api_service.api import auth, users, roles, coins, settings, user_coins, positions, recommendations
 
 app = FastAPI(
     title="Crypto Monitor API",
@@ -22,6 +24,7 @@ app.include_router(coins.router)
 app.include_router(settings.router)
 app.include_router(user_coins.router)
 app.include_router(positions.router)
+app.include_router(recommendations.router)
 
 @app.get("/")
 def root():

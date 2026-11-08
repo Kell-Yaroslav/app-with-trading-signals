@@ -1,0 +1,23 @@
+syntax = "proto3";
+
+package recommendation;
+
+// Описываем сервис
+service RecommendationService {
+  // Метод, который будет вызывать FastAPI
+  rpc GetRecommendation (RecommendationRequest) returns (RecommendationResponse) {}
+}
+
+// Входящие данные (история сделок)
+message RecommendationRequest {
+  string username = 1;
+  repeated float profit_history = 2;
+}
+
+// Исходящие данные (оптимальные настройки)
+message RecommendationResponse {
+  int32 optimal_ema_period = 1;
+  float optimal_target_pct = 2;
+  float optimal_stop_pct = 3;
+  string message = 4;
+}

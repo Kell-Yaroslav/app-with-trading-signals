@@ -1,0 +1,13 @@
+# Use this workspace to collaborate
+workspace:
+  id: d95c5e33-b7b8-4561-850b-1af4c246c191
+
+localResources:
+  collections:
+    - ../Crypto Monitor API
+
+# Each entry here maps a local resource to one or more corresponding objects in Postman Cloud
+
+cloudResources:
+  collections:
+    ../Crypto Monitor API: 9c850c60-36b5-46a0-85e5-89ee830a26fc

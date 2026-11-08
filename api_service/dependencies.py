@@ -13,14 +13,30 @@ from api_service.auth.jwt import decode_access_token
 # Схема OAuth2 — FastAPI будет искать токен в заголовке Authorization: Bearer <token>
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/api/auth/login")
 
+from fastapi import Query
 
-def get_session() -> Generator[Session, None, None]:
-    """Даёт сессию БД для эндпоинта."""
+def get_session(dbname: str = Query("crypto_monitor")):
+    print(f"\n[DEBUG] Подключаюсь к базе данных: {dbname}")
+
     session = SessionLocal()
     try:
         yield session
     finally:
         session.close()
+
+
+def get_session_factory(dbname: str):
+
+    def get_session():
+        print(f"\n[FACTORY] Подключаюсь к базе данных: {dbname}")
+        session = SessionLocal()
+        try:
+            yield session
+        finally:
+            session.close()
+
+    return get_session
+
 
 
 def get_current_user(
