@@ -231,7 +231,22 @@ uvicorn api_service.main:app --reload
 | `petr` | petr@mail.ru | 1234 | trader |
 
 ---
+## gRPC Микросервис
 
+Реализован **отдельный микросервис**, который анализирует историю сделок трейдера и выдаёт рекомендации по настройкам индикаторов (EMA, target, stop). Взаимодействие построено по протоколу gRPC с использованием Protocol Buffers.
+
+### Как это работает:
+1. Клиент делает HTTP-запрос `GET /api/recommendations/{username}`.
+2. FastAPI достает из БД историю позиций пользователя (`profit_percent`).
+3. **FastAPI (как gRPC-клиент)** обращается к микросервису на порт **50051**.
+4. **gRPC-сервер** обрабатывает данные и возвращает `RecommendationResponse` (Protobuf).
+5. FastAPI возвращает итоговый JSON клиенту.
+
+### Демонстрация работы:
+Отправь в **Postman** запрос:
+```http
+GET http://localhost/api/recommendations/ivan
+---
 ## Права доступа
 
 | Действие | Trader | Admin |
