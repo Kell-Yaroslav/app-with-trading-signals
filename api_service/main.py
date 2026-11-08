@@ -1,6 +1,7 @@
 """Точка входа API Service.
 
 Запуск:
+    python grpc_service/server.py
     uvicorn api_service.main:app --reload
     Start-Process -NoNewWindow .\nginx.exe
 
