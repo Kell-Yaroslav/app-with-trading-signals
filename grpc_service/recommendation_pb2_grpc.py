@@ -4,7 +4,6 @@ import grpc
 import warnings
 
 from grpc_service import recommendation_pb2 as recommendation__pb2
-
 GRPC_GENERATED_VERSION = '1.85.1'
 GRPC_VERSION = grpc.__version__
 _version_not_supported = False
@@ -40,6 +39,11 @@ class RecommendationServiceStub:
                 request_serializer=recommendation__pb2.RecommendationRequest.SerializeToString,
                 response_deserializer=recommendation__pb2.RecommendationResponse.FromString,
                 _registered_method=True)
+        self.StreamRecommendations = channel.unary_stream(
+                '/recommendation.RecommendationService/StreamRecommendations',
+                request_serializer=recommendation__pb2.StreamRequest.SerializeToString,
+                response_deserializer=recommendation__pb2.RecommendationResponse.FromString,
+                _registered_method=True)
 
 
 class RecommendationServiceServicer:
@@ -47,7 +51,14 @@ class RecommendationServiceServicer:
     """
 
     def GetRecommendation(self, request, context):
-        """Метод, который будет вызывать FastAPI
+        """1.  Unary-метод
+        """
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def StreamRecommendations(self, request, context):
+        """2.  Server Streaming-метод
         """
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
@@ -59,6 +70,11 @@ def add_RecommendationServiceServicer_to_server(servicer, server):
             'GetRecommendation': grpc.unary_unary_rpc_method_handler(
                     servicer.GetRecommendation,
                     request_deserializer=recommendation__pb2.RecommendationRequest.FromString,
+                    response_serializer=recommendation__pb2.RecommendationResponse.SerializeToString,
+            ),
+            'StreamRecommendations': grpc.unary_stream_rpc_method_handler(
+                    servicer.StreamRecommendations,
+                    request_deserializer=recommendation__pb2.StreamRequest.FromString,
                     response_serializer=recommendation__pb2.RecommendationResponse.SerializeToString,
             ),
     }
@@ -89,6 +105,33 @@ class RecommendationService:
             target,
             '/recommendation.RecommendationService/GetRecommendation',
             recommendation__pb2.RecommendationRequest.SerializeToString,
+            recommendation__pb2.RecommendationResponse.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def StreamRecommendations(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_stream(
+            request,
+            target,
+            '/recommendation.RecommendationService/StreamRecommendations',
+            recommendation__pb2.StreamRequest.SerializeToString,
             recommendation__pb2.RecommendationResponse.FromString,
             options,
             channel_credentials,

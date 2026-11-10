@@ -2,10 +2,16 @@ import grpc
 from concurrent import futures
 from grpc_service import recommendation_pb2
 from grpc_service import recommendation_pb2_grpc
+"""
+«Сервер запускается как отдельный процесс. 
+grpc.server — это объект внутри процесса, который слушает порт и разбирает HTTP/2-запросы
 
+Kомпилятор protoc сгенерировал базовый класс RecommendationServiceServicer. 
+Мы наследуемся от него и переопределяем метод GetRecommendation
+"""
 class RecommendationServicer(recommendation_pb2_grpc.RecommendationServiceServicer):
-    def GetRecommendation(self, request, context):
-        # Выводим в консоль, что gRPC получил запрос (это требование ЛР)
+    def GetRecommendation(self, request, context):#сообщение Protobuf и contex для управления вызовом
+
         print(f"[gRPC] Получен запрос от пользователя: {request.username}")
 
         # Простейшая логика: берем средний профит и корректируем параметры
@@ -14,7 +20,7 @@ class RecommendationServicer(recommendation_pb2_grpc.RecommendationServiceServic
         else:
             avg_profit = 0.0
 
-        # Логика рекомендаций (заглушка для примера)
+        # Логика рекомендаций
         ema = 20 if avg_profit < 2.0 else 50
         target = 3.0 if avg_profit < 2.0 else 5.0
         stop = 1.5
@@ -28,9 +34,22 @@ class RecommendationServicer(recommendation_pb2_grpc.RecommendationServiceServic
             message=msg
         )
 
+    def StreamRecommendations(self, request, context):
+        """Стриминг: отправляем по одному ответу на каждый таймфрейм."""
+        print(f"\n[gRPC] Стриминг запущен для: {request.username}")
+
+        for tf in request.timeframes:
+            print(f"[gRPC] Отправляем для {tf}")
+            yield recommendation_pb2.RecommendationResponse(
+                optimal_ema_period=20,
+                optimal_target_pct=3.0,
+                optimal_stop_pct=1.5,
+                message=f"Рекомендация для {tf}"
+            )
 
 def serve():
     server = grpc.server(futures.ThreadPoolExecutor(max_workers=10))
+    """Регистрирует класс без этого сервер не знал бы, куда направлять вызовы"""
     recommendation_pb2_grpc.add_RecommendationServiceServicer_to_server(
         RecommendationServicer(), server
     )

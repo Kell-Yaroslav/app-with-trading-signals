@@ -4,17 +4,26 @@ package recommendation;
 
 // Описываем сервис
 service RecommendationService {
-  // Метод, который будет вызывать FastAPI
+  // 1.  Unary-метод
   rpc GetRecommendation (RecommendationRequest) returns (RecommendationResponse) {}
+
+  // 2.  Server Streaming-метод
+  rpc StreamRecommendations (StreamRequest) returns (stream RecommendationResponse) {}
 }
 
-// Входящие данные (история сделок)
+// Входящие данные для Unary
 message RecommendationRequest {
   string username = 1;
   repeated float profit_history = 2;
 }
 
-// Исходящие данные (оптимальные настройки)
+// сообщение для Streaming
+message StreamRequest {
+  string username = 1;
+  repeated string timeframes = 2;
+}
+
+// Исходящие данные (используются в обоих методах)
 message RecommendationResponse {
   int32 optimal_ema_period = 1;
   float optimal_target_pct = 2;
