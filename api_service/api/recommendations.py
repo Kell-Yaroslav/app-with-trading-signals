@@ -3,8 +3,7 @@ from sqlalchemy.orm import Session
 from app.database import SessionLocal
 from app.models import User, Position, UserCoin
 from api_service.dependencies import get_session
-from grpc_service.client import get_recommendation
-
+from grpc_service.client import get_recommendation, stream_recommendations
 router = APIRouter(prefix="/api/recommendations", tags=["recommendations"])
 
 
@@ -35,3 +34,12 @@ def recommend_params(username: str, session: Session = Depends(get_session)):
         "trades_count": len(profit_history),
         "recommendation": recommendation
     }
+
+@router.get("/{username}/stream")
+def get_stream(username: str):
+    """Демонстрация Server Streaming."""
+    try:
+        results = stream_recommendations(username, ["15m", "1h", "4h"])
+        return {"user": username, "results": results}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Ошибка gRPC стриминга: {str(e)}")
